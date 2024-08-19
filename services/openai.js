@@ -29,6 +29,7 @@ const client = axios.create({
 
 client.interceptors.request.use((c) => {
   c.headers.Authorization = `Bearer ${config.OPENAI_API_KEY}`;
+  c.headers['OpenAI-Beta'] = 'assistants=v2'; 
   return handleRequest(c);
 });
 
@@ -47,6 +48,7 @@ const hasImage = ({ messages }) => (
 
 const createChatCompletion = ({
   model = config.OPENAI_COMPLETION_MODEL,
+  assistantId = "asst_KH0JPhAwJltfhWu7DkSg4Agu",
   messages,
   temperature = config.OPENAI_COMPLETION_TEMPERATURE,
   maxTokens = config.OPENAI_COMPLETION_MAX_TOKENS,
@@ -61,7 +63,7 @@ const createChatCompletion = ({
     frequency_penalty: frequencyPenalty,
     presence_penalty: presencePenalty,
   };
-  return client.post('/v1/chat/completions', body);
+  return client.post(`/v1/assistants/${assistantId}/completions`, body);
 };
 
 const createImage = ({
